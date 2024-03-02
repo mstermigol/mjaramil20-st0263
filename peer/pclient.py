@@ -64,7 +64,7 @@ if __name__ == "__main__":
             if reply.status_code == 200:
                 print("Uploaded successfully")
             elif reply.status_code == 409:
-                print("The file already existed")
+                print("The file already existed in the other peer")
             elif reply.status_code == 404:
                 print("There are no peers at the moment")
             

@@ -53,7 +53,7 @@ class PServerServicer(pserver_pb2_grpc.PServerServicer):
     
     def UploadFile(self, request, context):
         file_name = request.file_name
-        reply = UploadFile(file_name=file_name)
+        reply = UploadFileRequest()
         if reply.status_code == 200:
             print(reply.text)
             channel = grpc.insecure_channel(reply.text)
@@ -76,6 +76,7 @@ class PServerServicer(pserver_pb2_grpc.PServerServicer):
             files.append(file_name)
             reply = pserver_pb2.Reply()
             reply.status_code = 200
+            SendIndex()
             return reply
         else:
             reply = pserver_pb2.Reply()
@@ -96,7 +97,7 @@ def SendIndex():
 
 
 
-def UploadFile(file_name):
+def UploadFileRequest():
     url = f"{PSERVER_URL}:{PSERVER_PORT}"
     pserverData = {"url": url}
     reply = requests.get(
