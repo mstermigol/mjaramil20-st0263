@@ -5,7 +5,7 @@ import grpc
 import dotenv
 import pserver_pb2
 import pserver_pb2_grpc
-from pserver import serve, uploadFile
+from pserver import serve, uploadFile, StartPinging
 from threading import Thread
 
 
@@ -19,7 +19,7 @@ PSERVER_URL = os.getenv("PSERVER_URL")
 def LogIn():
     username = input("Enter username: ")
     password = input("Enter password: ") 
-    request = pserver_pb2.LogIn(username = username, password = password)
+    request = pserver_pb2.Credentials(username = username, password = password)
     reply = stub.RequestLogIn(request)
     while reply.status_code == 401:
         print("Invalid credentials. Please try again")
@@ -28,8 +28,10 @@ def LogIn():
         password = input("Enter password: ") 
         request = pserver_pb2.LogIn(username = username, password = password)
         reply = stub.RequestLogIn(request) 
+    StartPinging(username)
     print("You are logged in")
     print()
+    
 
 if __name__ == "__main__":
     channel = grpc.insecure_channel(f"{PSERVER_URL}:{PSERVER_PORT}")
@@ -44,7 +46,6 @@ if __name__ == "__main__":
         print("2. Upload")
         print("3. Log out")
         rpc_call = input("Option: ")
-
         if rpc_call == "0":
             break
         elif rpc_call == "1":

@@ -36,12 +36,17 @@ class PServerStub(object):
                 )
         self.RequestLogIn = channel.unary_unary(
                 '/PServer/RequestLogIn',
-                request_serializer=pserver__pb2.LogIn.SerializeToString,
+                request_serializer=pserver__pb2.Credentials.SerializeToString,
                 response_deserializer=pserver__pb2.Reply.FromString,
                 )
         self.RequestLogOut = channel.unary_unary(
                 '/PServer/RequestLogOut',
-                request_serializer=pserver__pb2.LogOut.SerializeToString,
+                request_serializer=pserver__pb2.Username.SerializeToString,
+                response_deserializer=pserver__pb2.Reply.FromString,
+                )
+        self.RequestPinging = channel.unary_unary(
+                '/PServer/RequestPinging',
+                request_serializer=pserver__pb2.Username.SerializeToString,
                 response_deserializer=pserver__pb2.Reply.FromString,
                 )
 
@@ -85,6 +90,12 @@ class PServerServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def RequestPinging(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_PServerServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -110,12 +121,17 @@ def add_PServerServicer_to_server(servicer, server):
             ),
             'RequestLogIn': grpc.unary_unary_rpc_method_handler(
                     servicer.RequestLogIn,
-                    request_deserializer=pserver__pb2.LogIn.FromString,
+                    request_deserializer=pserver__pb2.Credentials.FromString,
                     response_serializer=pserver__pb2.Reply.SerializeToString,
             ),
             'RequestLogOut': grpc.unary_unary_rpc_method_handler(
                     servicer.RequestLogOut,
-                    request_deserializer=pserver__pb2.LogOut.FromString,
+                    request_deserializer=pserver__pb2.Username.FromString,
+                    response_serializer=pserver__pb2.Reply.SerializeToString,
+            ),
+            'RequestPinging': grpc.unary_unary_rpc_method_handler(
+                    servicer.RequestPinging,
+                    request_deserializer=pserver__pb2.Username.FromString,
                     response_serializer=pserver__pb2.Reply.SerializeToString,
             ),
     }
@@ -208,7 +224,7 @@ class PServer(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/PServer/RequestLogIn',
-            pserver__pb2.LogIn.SerializeToString,
+            pserver__pb2.Credentials.SerializeToString,
             pserver__pb2.Reply.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
@@ -225,7 +241,24 @@ class PServer(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/PServer/RequestLogOut',
-            pserver__pb2.LogOut.SerializeToString,
+            pserver__pb2.Username.SerializeToString,
+            pserver__pb2.Reply.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def RequestPinging(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/PServer/RequestPinging',
+            pserver__pb2.Username.SerializeToString,
             pserver__pb2.Reply.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

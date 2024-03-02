@@ -1,3 +1,4 @@
+from datetime import datetime
 import os 
 import sys
 import grpc
@@ -8,6 +9,7 @@ import pserver_pb2
 from flask import Flask
 import pserver_pb2_grpc
 from concurrent import futures
+from threading import Thread
 
 env_path = os.path.join(os.path.dirname(__file__),
                         f"../configs/.env_{sys.argv[2]}")
@@ -25,7 +27,8 @@ class PServerServicer(pserver_pb2_grpc.PServerServicer):
     def RequestLogIn(self, request, context):
         username = request.username
         password = request.password
-        credentials = {"username": username, "password": password}
+        lastPing = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        credentials = {"username": username, "password": password, "lastPing": lastPing}
         replyREST = logIn(credentials=credentials)
         reply = pserver_pb2.Reply()
         reply.status_code = replyREST.status_code
@@ -58,14 +61,29 @@ def logIn(credentials):
     url = f"{PSERVER_URL}:{PSERVER_PORT}"
     username = credentials.get("username")
     password = credentials.get("password")
-    pserverData = {"url": url, "username": username, "password": password}
+    lastPing = credentials.get("lastPing")
+    pserverData = {"url": url, "username": username, "password": password, "lastPing": lastPing}
     reply = requests.post(
         f"http://{SERVER_URL}:{SERVER_PORT}/login", json=pserverData
     )
     return reply
 
+def StartPinging(username):
+    ping_checker_thread = Thread(target=SendPingThread, args=(username,))
+    ping_checker_thread.daemon = True
+    ping_checker_thread.start()
 
+def SendPingThread(username):
+    while True:
+        username = username
+        lastPing = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        pserverData = {"username": username, "lastPing": lastPing}
+        requests.post(
+            f"http://{SERVER_URL}:{SERVER_PORT}/ping", json=pserverData
+        )
+        time.sleep(10)
 
+    
 
 if __name__ == "__main__":
     serve()
