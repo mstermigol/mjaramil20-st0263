@@ -5,7 +5,7 @@ import grpc
 import dotenv
 import pserver_pb2
 import pserver_pb2_grpc
-from pserver import serve, upload_file
+from pserver import serve, uploadFile
 from threading import Thread
 
 
@@ -16,6 +16,20 @@ dotenv.load_dotenv(dotenv_path=env_path)
 PSERVER_PORT = os.getenv("PSERVER_PORT")
 PSERVER_URL = os.getenv("PSERVER_URL")
 
+def LogIn():
+    username = input("Enter username: ")
+    password = input("Enter password: ") 
+    request = pserver_pb2.LogIn(username = username, password = password)
+    reply = stub.RequestLogIn(request)
+    while reply.status_code == 401:
+        print("Invalid credentials. Please try again")
+        print()
+        username = input("Enter username: ")
+        password = input("Enter password: ") 
+        request = pserver_pb2.LogIn(username = username, password = password)
+        reply = stub.RequestLogIn(request) 
+    print("You are logged in")
+    print()
 
 if __name__ == "__main__":
     channel = grpc.insecure_channel(f"{PSERVER_URL}:{PSERVER_PORT}")
@@ -23,10 +37,12 @@ if __name__ == "__main__":
     pserver_thread = Thread(target=serve)
     pserver_thread.daemon = True
     pserver_thread.start()
+    LogIn()
     while True:
         print("0. Exit")
         print("1. Download")
         print("2. Upload")
+        print("3. Log out")
         rpc_call = input("Option: ")
 
         if rpc_call == "0":
@@ -41,8 +57,8 @@ if __name__ == "__main__":
                 print("File not found")
         elif rpc_call == "2":
             file_name = input("Enter the file name: ")
-            response = upload_file(file_name)
-            if response.status_code == 200:
+            reply = uploadFile(file_name)
+            if reply.status_code == 200:
                 print("Uploaded")
             else:
                 print("error")

@@ -12,11 +12,40 @@ SERVER_PORT = os.getenv("SERVER_PORT")
 
 app = Flask(__name__)
 
+users = {}
+files = {}
+urls = {}
+activeUsers = []
+
+@app.route("/login", methods=["POST"])
+def login():
+    pserverData = request.json
+    username = pserverData.get("username")
+    password = pserverData.get("password")
+    url = pserverData.get("url")
+    if username in users:
+        if users[username] == password:
+            print(users)
+            print(urls)
+            print(activeUsers)
+            return Response(status=200)
+        else:
+            return Response(status=401)
+    else:
+        users[username] = password
+        urls[username] = url
+        activeUsers.append(username)
+        print(users)
+        print(urls)
+        print(activeUsers)
+        return Response(status=200)
+
+
 @app.route("/upload", methods=["GET"])
 def upload():
-    pserver_data = request.json
-    file_name = pserver_data.get("file_name")
-    url = pserver_data.get("url")
+    pserverData = request.json
+    file_name = pserverData.get("file_name")
+    url = pserverData.get("url")
     
     return Response(status=200)
     

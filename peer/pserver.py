@@ -22,11 +22,21 @@ PSERVER_URL = os.getenv("PSERVER_URL")
 app = Flask(__name__)
 
 class PServerServicer(pserver_pb2_grpc.PServerServicer):
+    def RequestLogIn(self, request, context):
+        username = request.username
+        password = request.password
+        credentials = {"username": username, "password": password}
+        replyREST = logIn(credentials=credentials)
+        reply = pserver_pb2.Reply()
+        reply.status_code = replyREST.status_code
+        return reply
+    
     def DownloadFile(self, request, context):
         file_name = request.file_name
-        response = pserver_pb2.Reply()
-        response.status_code = 200
-        return response
+        reply = pserver_pb2.Reply()
+        reply.status_code = 200
+        return reply
+    
 
 
 def serve():
@@ -36,13 +46,26 @@ def serve():
     server.start()
     server.wait_for_termination()
 
-def upload_file(file_name):
+def uploadFile(file_name):
     url = f"{PSERVER_URL}:{PSERVER_PORT}"
-    pserver_data = {"file_name": file_name, "url": url}
-    response = requests.get(
-        f"http://{SERVER_URL}:{SERVER_PORT}/upload", json=pserver_data
+    pserverData = {"file_name": file_name, "url": url}
+    reply = requests.get(
+        f"http://{SERVER_URL}:{SERVER_PORT}/upload", json=pserverData
     )
-    return response
+    return reply
+
+def logIn(credentials):
+    url = f"{PSERVER_URL}:{PSERVER_PORT}"
+    username = credentials.get("username")
+    password = credentials.get("password")
+    pserverData = {"url": url, "username": username, "password": password}
+    reply = requests.post(
+        f"http://{SERVER_URL}:{SERVER_PORT}/login", json=pserverData
+    )
+    return reply
+
+
+
 
 if __name__ == "__main__":
     serve()
