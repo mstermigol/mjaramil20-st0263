@@ -5,7 +5,7 @@ import grpc
 import dotenv
 import pserver_pb2
 import pserver_pb2_grpc
-from pserver import serve, uploadFile, StartPinging
+from pserver import serve, uploadFile
 from threading import Thread
 
 
@@ -28,7 +28,8 @@ def LogIn():
         password = input("Enter password: ") 
         request = pserver_pb2.LogIn(username = username, password = password)
         reply = stub.RequestLogIn(request) 
-    StartPinging(username)
+    requestPing = pserver_pb2.Username(username = username)
+    replyPing = stub.RequestPinging(requestPing)
     print("You are logged in")
     print()
     

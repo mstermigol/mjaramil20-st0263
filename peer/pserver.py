@@ -40,6 +40,14 @@ class PServerServicer(pserver_pb2_grpc.PServerServicer):
         reply.status_code = 200
         return reply
     
+    def RequestPinging(self, request, context):
+        username = request.username
+        StartPinging(username)
+        reply = pserver_pb2.Reply()
+        reply.status_code = 200
+        return reply
+
+    
 
 
 def serve():
