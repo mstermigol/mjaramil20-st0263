@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+message File{
+	string file_name = 1;
+}
+
+message LogIn {
+	string username = 1;
+	string password = 2;
+}
+
+message LogOut {
+	string username = 1;
+}
+
+message Reply{
+	int32 status_code = 1;
+}
+
+service PServer{
+    rpc DownloadFile(File) returns (Reply) {}
+	rpc UploadFile(File) returns (Reply) {}
+
+	rpc RequestFile(File) returns (Reply) {}
+	rpc RequestUpload(File) returns (Reply) {}
+
+	rpc RequestLogIn(LogIn) returns (Reply) {}
+	rpc RequestLogOut(LogOut) returns (Reply) {}
+}
