@@ -23,6 +23,15 @@ PSERVER_URL = os.getenv("PSERVER_URL")
 
 app = Flask(__name__)
 
+files = ["siii", "no", "jaja", "2"]
+
+def serve():
+    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+    server.add_insecure_port(f"{PSERVER_URL}:{PSERVER_PORT}")
+    pserver_pb2_grpc.add_PServerServicer_to_server(PServerServicer(), server)
+    server.start()
+    server.wait_for_termination()
+
 class PServerServicer(pserver_pb2_grpc.PServerServicer):
     def RequestLogIn(self, request, context):
         username = request.username
@@ -32,34 +41,64 @@ class PServerServicer(pserver_pb2_grpc.PServerServicer):
         replyREST = logIn(credentials=credentials)
         reply = pserver_pb2.Reply()
         reply.status_code = replyREST.status_code
+        SendIndex()
         return reply
     
     def DownloadFile(self, request, context):
         file_name = request.file_name
-        reply = pserver_pb2.Reply()
-        reply.status_code = 200
+        channel = grpc.insecure_channel("localhost:5101")
+        stub = pserver_pb2_grpc.PServerStub(channel)
+        reply = stub.RequestUpload(pserver_pb2.File(file_name=file_name))
         return reply
     
+    def UploadFile(self, request, context):
+        file_name = request.file_name
+        reply = UploadFile(file_name=file_name)
+        if reply.status_code == 200:
+            print(reply.text)
+            channel = grpc.insecure_channel(reply.text)
+            stub = pserver_pb2_grpc.PServerStub(channel)
+            reply = stub.RequestUpload(pserver_pb2.File(file_name=file_name))
+            if reply.status_code == 200:
+                return reply
+            else:
+                reply = pserver_pb2.Reply()
+                reply.status_code = 409
+                return reply
+        else:
+            reply = pserver_pb2.Reply()
+            reply.status_code = 404
+            return reply
+    
+    def RequestUpload(self, request, context):
+        file_name = request.file_name
+        if file_name not in files:
+            files.append(file_name)
+            reply = pserver_pb2.Reply()
+            reply.status_code = 200
+            return reply
+        else:
+            reply = pserver_pb2.Reply()
+            reply.status_code = 409
+            return reply
+
     def RequestPinging(self, request, context):
-        username = request.username
-        StartPinging(username)
+        StartPinging()
         reply = pserver_pb2.Reply()
         reply.status_code = 200
         return reply
 
-    
+def SendIndex():
+    pserver_data = {"index": files, "url": f"{PSERVER_URL}:{PSERVER_PORT}"}
+    response = requests.post(
+        f"http://{SERVER_URL}:{SERVER_PORT}/index", json=pserver_data)
+    return response.status_code 
 
 
-def serve():
-    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-    server.add_insecure_port(f"{PSERVER_URL}:{PSERVER_PORT}")
-    pserver_pb2_grpc.add_PServerServicer_to_server(PServerServicer(), server)
-    server.start()
-    server.wait_for_termination()
 
-def uploadFile(file_name):
+def UploadFile(file_name):
     url = f"{PSERVER_URL}:{PSERVER_PORT}"
-    pserverData = {"file_name": file_name, "url": url}
+    pserverData = {"url": url}
     reply = requests.get(
         f"http://{SERVER_URL}:{SERVER_PORT}/upload", json=pserverData
     )
@@ -76,16 +115,16 @@ def logIn(credentials):
     )
     return reply
 
-def StartPinging(username):
-    ping_checker_thread = Thread(target=SendPingThread, args=(username,))
+def StartPinging():
+    ping_checker_thread = Thread(target=SendPingThread)
     ping_checker_thread.daemon = True
     ping_checker_thread.start()
 
-def SendPingThread(username):
+def SendPingThread():
     while True:
-        username = username
+        url = f"{PSERVER_URL}:{PSERVER_PORT}"
         lastPing = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        pserverData = {"username": username, "lastPing": lastPing}
+        pserverData = {"url": url, "lastPing": lastPing}
         requests.post(
             f"http://{SERVER_URL}:{SERVER_PORT}/ping", json=pserverData
         )

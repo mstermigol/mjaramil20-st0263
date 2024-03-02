@@ -5,7 +5,7 @@ import grpc
 import dotenv
 import pserver_pb2
 import pserver_pb2_grpc
-from pserver import serve, uploadFile
+from pserver import serve
 from threading import Thread
 
 
@@ -28,8 +28,8 @@ def LogIn():
         password = input("Enter password: ") 
         request = pserver_pb2.LogIn(username = username, password = password)
         reply = stub.RequestLogIn(request) 
-    requestPing = pserver_pb2.Username(username = username)
-    replyPing = stub.RequestPinging(requestPing)
+    requestPing = pserver_pb2.Any()
+    stub.RequestPinging(requestPing)    
     print("You are logged in")
     print()
     
@@ -55,15 +55,19 @@ if __name__ == "__main__":
             reply = stub.DownloadFile(request)
             if reply.status_code == 200:
                 print("Successful file download")
-            elif reply.status_code == 404:
-                print("File not found")
+            else:
+                print("jajaja file download")
         elif rpc_call == "2":
             file_name = input("Enter the file name: ")
-            reply = uploadFile(file_name)
+            request = request = pserver_pb2.File(file_name = file_name)
+            reply = stub.UploadFile(request)
             if reply.status_code == 200:
-                print("Uploaded")
-            else:
-                print("error")
+                print("Uploaded successfully")
+            elif reply.status_code == 409:
+                print("The file already existed")
+            elif reply.status_code == 404:
+                print("There are no peers at the moment")
+            
 
 
 

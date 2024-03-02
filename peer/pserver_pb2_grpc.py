@@ -46,7 +46,7 @@ class PServerStub(object):
                 )
         self.RequestPinging = channel.unary_unary(
                 '/PServer/RequestPinging',
-                request_serializer=pserver__pb2.Username.SerializeToString,
+                request_serializer=pserver__pb2.Any.SerializeToString,
                 response_deserializer=pserver__pb2.Reply.FromString,
                 )
 
@@ -131,7 +131,7 @@ def add_PServerServicer_to_server(servicer, server):
             ),
             'RequestPinging': grpc.unary_unary_rpc_method_handler(
                     servicer.RequestPinging,
-                    request_deserializer=pserver__pb2.Username.FromString,
+                    request_deserializer=pserver__pb2.Any.FromString,
                     response_serializer=pserver__pb2.Reply.SerializeToString,
             ),
     }
@@ -258,7 +258,7 @@ class PServer(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/PServer/RequestPinging',
-            pserver__pb2.Username.SerializeToString,
+            pserver__pb2.Any.SerializeToString,
             pserver__pb2.Reply.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

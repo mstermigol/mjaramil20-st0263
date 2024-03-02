@@ -17,6 +17,10 @@ message Reply{
 	int32 status_code = 1;
 }
 
+message Any{
+
+}
+
 service PServer{
     rpc DownloadFile(File) returns (Reply) {}
 	rpc UploadFile(File) returns (Reply) {}
@@ -27,5 +31,5 @@ service PServer{
 	rpc RequestLogIn(Credentials) returns (Reply) {}
 	rpc RequestLogOut(Username) returns (Reply) {}
 
-	rpc RequestPinging(Username) returns (Reply) {}
+	rpc RequestPinging(Any) returns (Reply) {}
 }
