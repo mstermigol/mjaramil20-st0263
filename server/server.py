@@ -17,7 +17,6 @@ app = Flask(__name__)
 
 users = {}
 files = {}
-urls = {}
 activeUsers = {}
 
 @app.route("/login", methods=["POST"])
@@ -35,7 +34,6 @@ def login():
             return Response(status=401)
     else:
         users[username] = password
-        urls[username] = url
         activeUsers[url] = lastPing
         return Response(status=200)
 

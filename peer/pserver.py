@@ -55,7 +55,6 @@ class PServerServicer(pserver_pb2_grpc.PServerServicer):
         file_name = request.file_name
         reply = UploadFileRequest()
         if reply.status_code == 200:
-            print(reply.text)
             channel = grpc.insecure_channel(reply.text)
             stub = pserver_pb2_grpc.PServerStub(channel)
             reply = stub.RequestUpload(pserver_pb2.File(file_name=file_name))
