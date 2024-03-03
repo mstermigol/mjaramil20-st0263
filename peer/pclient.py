@@ -83,7 +83,4 @@ if __name__ == "__main__":
     pserver_thread.start()
     LogIn()
     Loop()
-
-
-
     channel.close()

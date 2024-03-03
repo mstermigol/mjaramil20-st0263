@@ -96,8 +96,6 @@ def logout():
     pserverData = request.json
     url = pserverData.get("url")
     del activeUsers[url]
-    print("borradooooo")
-    print(activeUsers)
     return Response(status=200)
 
 def CheckPings():
@@ -109,11 +107,7 @@ def CheckPings():
                 if (currentTime - datetime.strptime(lastPing, "%Y-%m-%d %H:%M:%S")).total_seconds() > 15:
                     usersRemove.append(url)
             for url in usersRemove:
-                del activeUsers[url]
-                print(f"{url} deleted")
-                print(users)
-                print(files)
-                print(activeUsers)    
+                del activeUsers[url]  
         time.sleep(5)
 
 if __name__ == "__main__":
