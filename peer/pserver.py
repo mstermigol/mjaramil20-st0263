@@ -6,7 +6,6 @@ import time
 import dotenv
 import requests
 import pserver_pb2
-from flask import Flask
 import pserver_pb2_grpc
 from concurrent import futures
 from threading import Thread
@@ -19,8 +18,6 @@ SERVER_PORT = os.getenv("SERVER_PORT")
 
 PSERVER_PORT = os.getenv("PSERVER_PORT")
 PSERVER_URL = os.getenv("PSERVER_URL")
-
-app = Flask(__name__)
 
 files = []
 
