@@ -15,9 +15,6 @@ COPY . /code/
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
-# Stand in server directory
-WORKDIR /code/server
-
 # Environment variables
 ARG ENV_SERVER
 

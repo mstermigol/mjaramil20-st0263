@@ -15,9 +15,6 @@ COPY . /code/
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
-# Stand in peer directory
-WORKDIR /code/peer
-
 # Environment variables
 ARG ENV_PCLIENT
 ARG ENV_PSERVER
