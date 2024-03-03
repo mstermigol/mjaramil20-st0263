@@ -61,10 +61,8 @@ def upload():
             if (urlServer != url):
                 peers.append(urlServer)        
         peer = random.choice(peers)
-        print(peer)
         return peer, 200, {'Content-Type': 'text/plain'}    
     else:
-        print(files)
         return Response(status=404)
     
 @app.route("/download", methods=["GET"])
@@ -77,16 +75,13 @@ def download():
         if(len(potentialUrls) < 2):
             peers = []
             for urlPeer in potentialUrls:
-                if urlPeer != url:
+                if urlPeer != url and urlPeer in activeUsers:
                     peers.append(urlPeer)
-            peer = random.choice(peers)
-            print(peer)
-            return peer, 200, {'Content-Type': 'text/plain'}
-        else:
-            return Response(status=404)
-
-
-
+            if peers:
+                peer = random.choice(peers)
+                if (peer):
+                    return peer, 200, {'Content-Type': 'text/plain'}
+    return Response(status=404)
 
 @app.route("/ping", methods=["POST"])
 def ping():
@@ -105,8 +100,11 @@ def CheckPings():
                 if (currentTime - datetime.strptime(lastPing, "%Y-%m-%d %H:%M:%S")).total_seconds() > 15:
                     usersRemove.append(url)
             for url in usersRemove:
-                print(f"{url} deleted")
                 del activeUsers[url]
+                print(f"{url} deleted")
+                print(users)
+                print(files)
+                print(activeUsers)    
         time.sleep(5)
 
 if __name__ == "__main__":

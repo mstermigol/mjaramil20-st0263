@@ -122,6 +122,7 @@ class PServerServicer(pserver_pb2_grpc.PServerServicer):
         StartPinging()
         global pinging_active
         pinging_active = True
+        print(pinging_active)
         reply = pserver_pb2.Reply()
         reply.status_code = 200
         return reply
@@ -166,21 +167,22 @@ def logIn(credentials):
     return reply
 
 def StartPinging():
+    print(pinging_active)
     ping_checker_thread = Thread(target=SendPingThread)
     ping_checker_thread.daemon = True
     ping_checker_thread.start()
 
 def SendPingThread():
     global pinging_active
-    while True:
-        if(pinging_active):
-            url = f"{PSERVER_URL}:{PSERVER_PORT}"
-            lastPing = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            pserverData = {"url": url, "lastPing": lastPing}
-            requests.post(
-                f"http://{SERVER_URL}:{SERVER_PORT}/ping", json=pserverData
-            )
-            time.sleep(10)
+    print(pinging_active)
+    while pinging_active:
+        url = f"{PSERVER_URL}:{PSERVER_PORT}"
+        lastPing = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        pserverData = {"url": url, "lastPing": lastPing}
+        requests.post(
+            f"http://{SERVER_URL}:{SERVER_PORT}/ping", json=pserverData
+        )
+        time.sleep(10)
 
 
 
