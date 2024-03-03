@@ -45,11 +45,23 @@ class PServerServicer(pserver_pb2_grpc.PServerServicer):
         return reply
     
     def DownloadFile(self, request, context):
+        url = f"{PSERVER_URL}:{PSERVER_PORT}"       
         file_name = request.file_name
-        channel = grpc.insecure_channel("localhost:5101")
-        stub = pserver_pb2_grpc.PServerStub(channel)
-        reply = stub.RequestUpload(pserver_pb2.File(file_name=file_name))
-        return reply
+        reply = DownloadFileRequest(file_name=file_name)
+        if reply.status_code == 200:
+            channel = grpc.insecure_channel(reply.text)
+            stub = pserver_pb2_grpc.PServerStub(channel)
+            reply = stub.RequestFile(pserver_pb2.UploadMessage(file_name=file_name, url=url))
+            if reply.status_code == 200:
+                return reply
+            else:
+                reply = pserver_pb2.Reply()
+                reply.status_code = 409
+                return reply
+        else:
+            reply = pserver_pb2.Reply()
+            reply.status_code = 404
+            return reply
     
     def UploadFile(self, request, context):
         file_name = request.file_name
@@ -69,6 +81,21 @@ class PServerServicer(pserver_pb2_grpc.PServerServicer):
             reply.status_code = 404
             return reply
     
+    def RequestFile(self, request, context):
+        file_name = request.file_name
+        url = request.url
+
+        if file_name in files:
+            channel = grpc.insecure_channel(url)
+            stub = pserver_pb2_grpc.PServerStub(channel)
+            stub.RequestUpload(pserver_pb2.File(file_name=file_name))
+            reply = pserver_pb2.Reply()
+            reply.status_code = 200
+            return reply
+        reply = pserver_pb2.Reply()
+        reply.status_code = 404
+        return reply
+
     def RequestUpload(self, request, context):
         file_name = request.file_name
         if file_name not in files:
@@ -87,6 +114,12 @@ class PServerServicer(pserver_pb2_grpc.PServerServicer):
         reply = pserver_pb2.Reply()
         reply.status_code = 200
         return reply
+    
+    def ListIndex(self, request, context):
+        reply = pserver_pb2.Index()
+        for file in files:
+            reply.my_list.append(file)
+        return reply
 
 def SendIndex():
     pserver_data = {"index": files, "url": f"{PSERVER_URL}:{PSERVER_PORT}"}
@@ -94,7 +127,13 @@ def SendIndex():
         f"http://{SERVER_URL}:{SERVER_PORT}/index", json=pserver_data)
     return response.status_code 
 
-
+def DownloadFileRequest(file_name):
+    url = f"{PSERVER_URL}:{PSERVER_PORT}"
+    pserverData = {"url": url, "file_name": file_name}
+    reply = requests.get(
+        f"http://{SERVER_URL}:{SERVER_PORT}/download", json=pserverData
+    )
+    return reply
 
 def UploadFileRequest():
     url = f"{PSERVER_URL}:{PSERVER_PORT}"
@@ -129,6 +168,8 @@ def SendPingThread():
             f"http://{SERVER_URL}:{SERVER_PORT}/ping", json=pserverData
         )
         time.sleep(10)
+
+
 
     
 

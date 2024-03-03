@@ -9,12 +9,21 @@ message Credentials {
 	string password = 2;
 }
 
-message Username {
-	string username = 1;
+message Url {
+	string url = 1;
 }
 
 message Reply{
 	int32 status_code = 1;
+}
+
+message Index {
+	repeated string my_list = 1; 
+}
+
+message UploadMessage{
+	string url = 1;
+	string file_name = 2;
 }
 
 message Any{
@@ -25,11 +34,13 @@ service PServer{
     rpc DownloadFile(File) returns (Reply) {}
 	rpc UploadFile(File) returns (Reply) {}
 
-	rpc RequestFile(File) returns (Reply) {}
+	rpc RequestFile(UploadMessage) returns (Reply) {}
 	rpc RequestUpload(File) returns (Reply) {}
 
 	rpc RequestLogIn(Credentials) returns (Reply) {}
-	rpc RequestLogOut(Username) returns (Reply) {}
+	rpc RequestLogOut(Url) returns (Reply) {}
 
 	rpc RequestPinging(Any) returns (Reply) {}
+
+	rpc ListIndex(Any) returns (Index) {}
 }

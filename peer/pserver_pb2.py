@@ -14,7 +14,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\rpserver.proto\"\x19\n\x04\x46ile\x12\x11\n\tfile_name\x18\x01 \x01(\t\"1\n\x0b\x43redentials\x12\x10\n\x08username\x18\x01 \x01(\t\x12\x10\n\x08password\x18\x02 \x01(\t\"\x1c\n\x08Username\x12\x10\n\x08username\x18\x01 \x01(\t\"\x1c\n\x05Reply\x12\x13\n\x0bstatus_code\x18\x01 \x01(\x05\"\x05\n\x03\x41ny2\xfb\x01\n\x07PServer\x12\x1f\n\x0c\x44ownloadFile\x12\x05.File\x1a\x06.Reply\"\x00\x12\x1d\n\nUploadFile\x12\x05.File\x1a\x06.Reply\"\x00\x12\x1e\n\x0bRequestFile\x12\x05.File\x1a\x06.Reply\"\x00\x12 \n\rRequestUpload\x12\x05.File\x1a\x06.Reply\"\x00\x12&\n\x0cRequestLogIn\x12\x0c.Credentials\x1a\x06.Reply\"\x00\x12$\n\rRequestLogOut\x12\t.Username\x1a\x06.Reply\"\x00\x12 \n\x0eRequestPinging\x12\x04.Any\x1a\x06.Reply\"\x00\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\rpserver.proto\"\x19\n\x04\x46ile\x12\x11\n\tfile_name\x18\x01 \x01(\t\"1\n\x0b\x43redentials\x12\x10\n\x08username\x18\x01 \x01(\t\x12\x10\n\x08password\x18\x02 \x01(\t\"\x12\n\x03Url\x12\x0b\n\x03url\x18\x01 \x01(\t\"\x1c\n\x05Reply\x12\x13\n\x0bstatus_code\x18\x01 \x01(\x05\"\x18\n\x05Index\x12\x0f\n\x07my_list\x18\x01 \x03(\t\"/\n\rUploadMessage\x12\x0b\n\x03url\x18\x01 \x01(\t\x12\x11\n\tfile_name\x18\x02 \x01(\t\"\x05\n\x03\x41ny2\x9c\x02\n\x07PServer\x12\x1f\n\x0c\x44ownloadFile\x12\x05.File\x1a\x06.Reply\"\x00\x12\x1d\n\nUploadFile\x12\x05.File\x1a\x06.Reply\"\x00\x12\'\n\x0bRequestFile\x12\x0e.UploadMessage\x1a\x06.Reply\"\x00\x12 \n\rRequestUpload\x12\x05.File\x1a\x06.Reply\"\x00\x12&\n\x0cRequestLogIn\x12\x0c.Credentials\x1a\x06.Reply\"\x00\x12\x1f\n\rRequestLogOut\x12\x04.Url\x1a\x06.Reply\"\x00\x12 \n\x0eRequestPinging\x12\x04.Any\x1a\x06.Reply\"\x00\x12\x1b\n\tListIndex\x12\x04.Any\x1a\x06.Index\"\x00\x62\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -25,12 +25,16 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   _globals['_FILE']._serialized_end=42
   _globals['_CREDENTIALS']._serialized_start=44
   _globals['_CREDENTIALS']._serialized_end=93
-  _globals['_USERNAME']._serialized_start=95
-  _globals['_USERNAME']._serialized_end=123
-  _globals['_REPLY']._serialized_start=125
-  _globals['_REPLY']._serialized_end=153
-  _globals['_ANY']._serialized_start=155
-  _globals['_ANY']._serialized_end=160
-  _globals['_PSERVER']._serialized_start=163
-  _globals['_PSERVER']._serialized_end=414
+  _globals['_URL']._serialized_start=95
+  _globals['_URL']._serialized_end=113
+  _globals['_REPLY']._serialized_start=115
+  _globals['_REPLY']._serialized_end=143
+  _globals['_INDEX']._serialized_start=145
+  _globals['_INDEX']._serialized_end=169
+  _globals['_UPLOADMESSAGE']._serialized_start=171
+  _globals['_UPLOADMESSAGE']._serialized_end=218
+  _globals['_ANY']._serialized_start=220
+  _globals['_ANY']._serialized_end=225
+  _globals['_PSERVER']._serialized_start=228
+  _globals['_PSERVER']._serialized_end=512
 # @@protoc_insertion_point(module_scope)

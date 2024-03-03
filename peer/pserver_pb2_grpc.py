@@ -26,7 +26,7 @@ class PServerStub(object):
                 )
         self.RequestFile = channel.unary_unary(
                 '/PServer/RequestFile',
-                request_serializer=pserver__pb2.File.SerializeToString,
+                request_serializer=pserver__pb2.UploadMessage.SerializeToString,
                 response_deserializer=pserver__pb2.Reply.FromString,
                 )
         self.RequestUpload = channel.unary_unary(
@@ -41,13 +41,18 @@ class PServerStub(object):
                 )
         self.RequestLogOut = channel.unary_unary(
                 '/PServer/RequestLogOut',
-                request_serializer=pserver__pb2.Username.SerializeToString,
+                request_serializer=pserver__pb2.Url.SerializeToString,
                 response_deserializer=pserver__pb2.Reply.FromString,
                 )
         self.RequestPinging = channel.unary_unary(
                 '/PServer/RequestPinging',
                 request_serializer=pserver__pb2.Any.SerializeToString,
                 response_deserializer=pserver__pb2.Reply.FromString,
+                )
+        self.ListIndex = channel.unary_unary(
+                '/PServer/ListIndex',
+                request_serializer=pserver__pb2.Any.SerializeToString,
+                response_deserializer=pserver__pb2.Index.FromString,
                 )
 
 
@@ -96,6 +101,12 @@ class PServerServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def ListIndex(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_PServerServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -111,7 +122,7 @@ def add_PServerServicer_to_server(servicer, server):
             ),
             'RequestFile': grpc.unary_unary_rpc_method_handler(
                     servicer.RequestFile,
-                    request_deserializer=pserver__pb2.File.FromString,
+                    request_deserializer=pserver__pb2.UploadMessage.FromString,
                     response_serializer=pserver__pb2.Reply.SerializeToString,
             ),
             'RequestUpload': grpc.unary_unary_rpc_method_handler(
@@ -126,13 +137,18 @@ def add_PServerServicer_to_server(servicer, server):
             ),
             'RequestLogOut': grpc.unary_unary_rpc_method_handler(
                     servicer.RequestLogOut,
-                    request_deserializer=pserver__pb2.Username.FromString,
+                    request_deserializer=pserver__pb2.Url.FromString,
                     response_serializer=pserver__pb2.Reply.SerializeToString,
             ),
             'RequestPinging': grpc.unary_unary_rpc_method_handler(
                     servicer.RequestPinging,
                     request_deserializer=pserver__pb2.Any.FromString,
                     response_serializer=pserver__pb2.Reply.SerializeToString,
+            ),
+            'ListIndex': grpc.unary_unary_rpc_method_handler(
+                    servicer.ListIndex,
+                    request_deserializer=pserver__pb2.Any.FromString,
+                    response_serializer=pserver__pb2.Index.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -190,7 +206,7 @@ class PServer(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/PServer/RequestFile',
-            pserver__pb2.File.SerializeToString,
+            pserver__pb2.UploadMessage.SerializeToString,
             pserver__pb2.Reply.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
@@ -241,7 +257,7 @@ class PServer(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/PServer/RequestLogOut',
-            pserver__pb2.Username.SerializeToString,
+            pserver__pb2.Url.SerializeToString,
             pserver__pb2.Reply.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
@@ -260,5 +276,22 @@ class PServer(object):
         return grpc.experimental.unary_unary(request, target, '/PServer/RequestPinging',
             pserver__pb2.Any.SerializeToString,
             pserver__pb2.Reply.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def ListIndex(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/PServer/ListIndex',
+            pserver__pb2.Any.SerializeToString,
+            pserver__pb2.Index.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

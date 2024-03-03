@@ -45,7 +45,7 @@ if __name__ == "__main__":
         print("0. Exit")
         print("1. Download")
         print("2. Upload")
-        print("3. Log out")
+        print("3. List Index")
         rpc_call = input("Option: ")
         if rpc_call == "0":
             break
@@ -55,8 +55,8 @@ if __name__ == "__main__":
             reply = stub.DownloadFile(request)
             if reply.status_code == 200:
                 print("Successful file download")
-            else:
-                print("jajaja file download")
+            elif reply.status_code == 404:
+                print("Could not download the file")
         elif rpc_call == "2":
             file_name = input("Enter the file name: ")
             request = request = pserver_pb2.File(file_name = file_name)
@@ -67,7 +67,13 @@ if __name__ == "__main__":
                 print("The file already existed in the other peer")
             elif reply.status_code == 404:
                 print("There are no peers at the moment")
-            
+        elif rpc_call == "3":
+            request = pserver_pb2.Any()
+            reply = stub.ListIndex(request)
+            if reply.my_list:
+                print(reply.my_list)
+            else:
+                print("There are no files")
 
 
 

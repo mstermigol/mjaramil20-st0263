@@ -58,7 +58,7 @@ def upload():
     if (len(active) > 1):
         peers = []
         for urlServer in active:
-            if (urlServer is not url):
+            if (urlServer != url):
                 peers.append(urlServer)        
         peer = random.choice(peers)
         print(peer)
@@ -66,9 +66,30 @@ def upload():
     else:
         print(files)
         return Response(status=404)
+    
+@app.route("/download", methods=["GET"])
+def download():
+    pserverData = request.json
+    url = pserverData.get("url")
+    file_name = pserverData.get("file_name")
+    if file_name in files:
+        potentialUrls = files[file_name]
+        if(len(potentialUrls) < 2):
+            peers = []
+            for urlPeer in potentialUrls:
+                if urlPeer != url:
+                    peers.append(urlPeer)
+            peer = random.choice(peers)
+            print(peer)
+            return peer, 200, {'Content-Type': 'text/plain'}
+        else:
+            return Response(status=404)
+
+
+
 
 @app.route("/ping", methods=["POST"])
-def Ping():
+def ping():
     pserverData = request.json
     url = pserverData.get("url")
     lastPing = pserverData.get("lastPing")
