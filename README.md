@@ -16,6 +16,28 @@ El pclient se comunica correctamente con el pserver a traves de gRPC. El pserver
 
 ## 2. Información general de diseño de alto nivel, arquitectura, patrones, mejores prácticas utilizadas.
 
+La arquitectura es la de una red P2P no estructurado basada en el servidor. El flujo de la comunicacion para la carga y descarga de archivos se da de la siguiente manera:
+
+**Carga:**
+1. Desde el pclient se le dice por gRPC al pserver que se quiere cargar un archivo
+2. El pserver se comunica con el server a traves de RESTAPI para preguntarle por la URL de algun peer.
+3. El servidor le devuelve la URL de uno de los otros peers.
+4. El pserver se comunica por gRPC con el pserver del otro peer y le dice que quiere cargar un archivo.
+5. El pserver del segundo peer revisa si tiene el archivo, en caso de no tenerlo lo agrega a su index y notifica al servidor del nuevo index.
+6. El pserver del segundo peer le dice al otro pserver que la carga fue satisfactoria.
+7. El pserver le notifica al pclient que se cargo el archivo.
+8. El pclient muestra por consola que se logro la carga.
+
+**Descarga:**
+1. Desde el pclient se le dice por gRPC al pserver que se quiere descargar un archivo
+2. El pserver se comunica con el server a traves de RESTAPI para preguntarle por la URL de algun peer que tenga el archivo.
+3. El servidor le devuelve la URL de uno de los otros peers.
+4. El pserver se comunica por gRPC con el pserver del otro peer y le dice que quiere descargar un archivo en especifico.
+5. El pserver del segundo peer revisa si tiene el archivo, en caso de tenerlo le pide al primer peer que lo cargue.
+6. El pserver del primer peer recibe el pedido y agrega el archivo del segundo peer a su index.
+7. El pserver le notifica al server de su nuevo index.
+8. El pclient muestra por consola que se logro la descarga.
+
 ## 3. Descripción del ambiente de desarrollo y técnico: lenguaje de programación, librerias, paquetes, etc, con sus numeros de versiones.
 **Detalles tecnicos** </br>
 El lenguaje de programacion que se utilizo tanto para peer como para server fue `python`. Las librerias que se utilizaron fueron grpcio, grpcio-tools, python-dotenv, flask, requests, random, time, threading, os, sys y concurrent. Todas estas en las ultimas versiones de cada una. 
@@ -53,12 +75,14 @@ Los metodos **API REST** que tiene pserver son:
 6. **SendPingThread** -> Le manda un ping al servidor periodicamente para informarle que esta activo.
 
 Para estos ultimos el `server` les retorna lo siguiente:
-1. **Index** -> Agrega al diccionario de .
-2. **DownloadRequest** -> Notifica al servidor que se quiere descargar un archivo.
-3. **UploadFileRequest** -> Notifica al servidor que se quiere cargar un archivo.
-4. **LogIn** -> Le manda las credenciales al servidor para validarlas.
-5. **LogOut** -> Le notifica al servidor que el peer va a estar inactivo.
-6. **SendPingThread** -> Le manda un ping al servidor periodicamente para informarle que esta activo.
+1. **index** -> Agrega al diccionario de archivos la URL del peer a los archivos que tenga.
+2. **download** -> Devuelve la URL de algun peer activo de manera aleatoria.
+3. **upload** -> Devuelve la URL de algun peer activo que tenga el archivo.
+4. **login** -> Devuelve si las credenciales son validas y las agrega a un diccionario.
+5. **logout** -> Remueve al peer de la lista de activos.
+6. **ping** -> Actualiza la ultima conexion del peer.
+
+Ademas el `server` tiene un hilo que revisara periodicamente el estado de actividad de los peers para ver si los saca de la lista de peers activos.
    
 **Estructura de carpetas** </br>
 El proyecto se dividio en 4 carpetas:
@@ -96,4 +120,6 @@ El proyecto se ejecuta de la siguiente manera:
 
 ## 5. Otra información que considere relevante para esta actividad.
 
-## referencias:
+### Referencias:
+- https://github.com/st0263eafit/st0263-241/tree/main/Laboratorio-RPC
+- https://www.youtube.com/watch?v=WB37L7PjI5k&t=411s
