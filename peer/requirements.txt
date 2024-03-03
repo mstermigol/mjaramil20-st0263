@@ -1,4 +1,4 @@
-grpcio == "*"
-grpcio-tools == "*"
-python-dotenv == "*"
-requests == "*"
+grpcio == "1.62.0"
+grpcio-tools == "1.62.0"
+python-dotenv == "1.0.1"
+requests == "2.31.0"
