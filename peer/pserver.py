@@ -11,8 +11,7 @@ import pserver_pb2_grpc
 from concurrent import futures
 from threading import Thread
 
-env_path = os.path.join(os.path.dirname(__file__),
-                        f"../configs/.env_{sys.argv[2]}")
+env_path = os.path.join(os.path.dirname(__file__), sys.argv[2])
 dotenv.load_dotenv(dotenv_path=env_path)
 
 SERVER_URL = os.getenv("SERVER_URL")
@@ -23,7 +22,7 @@ PSERVER_URL = os.getenv("PSERVER_URL")
 
 app = Flask(__name__)
 
-files = ["siii", "no", "jaja", "2"]
+files = []
 
 pinging_active = True
 
