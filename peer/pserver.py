@@ -181,15 +181,18 @@ def StartPinging():
 
 def SendPingThread():
     global pinging_active
-    while pinging_active:
-        url = f"{PSERVER_URL}:{PSERVER_PORT}"
-        lastPing = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        pserverData = {"url": url, "lastPing": lastPing}
-        requests.post(
-            f"http://{SERVER_URL}:{SERVER_PORT}/ping", json=pserverData
-        )
-        time.sleep(10)
-
+    try:
+        while pinging_active:
+            url = f"{PSERVER_URL}:{PSERVER_PORT}"
+            lastPing = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            pserverData = {"url": url, "lastPing": lastPing}
+            requests.post(
+                f"http://{SERVER_URL}:{SERVER_PORT}/ping", json=pserverData
+            )
+            time.sleep(10)
+    except Exception as e:
+        StartPinging()
+        
 
 
     
