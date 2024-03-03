@@ -25,6 +25,8 @@ app = Flask(__name__)
 
 files = ["siii", "no", "jaja", "2"]
 
+pinging_active = True
+
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     server.add_insecure_port(f"{PSERVER_URL}:{PSERVER_PORT}")
@@ -44,6 +46,13 @@ class PServerServicer(pserver_pb2_grpc.PServerServicer):
         SendIndex()
         return reply
     
+    def RequestLogOut(self, request, context):
+        global pinging_active
+        pinging_active = False
+        reply = pserver_pb2.Reply()
+        reply.status_code = 200
+        return reply
+
     def DownloadFile(self, request, context):
         url = f"{PSERVER_URL}:{PSERVER_PORT}"       
         file_name = request.file_name
@@ -111,6 +120,8 @@ class PServerServicer(pserver_pb2_grpc.PServerServicer):
 
     def RequestPinging(self, request, context):
         StartPinging()
+        global pinging_active
+        pinging_active = True
         reply = pserver_pb2.Reply()
         reply.status_code = 200
         return reply
@@ -160,14 +171,16 @@ def StartPinging():
     ping_checker_thread.start()
 
 def SendPingThread():
+    global pinging_active
     while True:
-        url = f"{PSERVER_URL}:{PSERVER_PORT}"
-        lastPing = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        pserverData = {"url": url, "lastPing": lastPing}
-        requests.post(
-            f"http://{SERVER_URL}:{SERVER_PORT}/ping", json=pserverData
-        )
-        time.sleep(10)
+        if(pinging_active):
+            url = f"{PSERVER_URL}:{PSERVER_PORT}"
+            lastPing = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            pserverData = {"url": url, "lastPing": lastPing}
+            requests.post(
+                f"http://{SERVER_URL}:{SERVER_PORT}/ping", json=pserverData
+            )
+            time.sleep(10)
 
 
 
