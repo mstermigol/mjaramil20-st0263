@@ -40,13 +40,14 @@ class PServerServicer(pserver_pb2_grpc.PServerServicer):
         password = request.password
         lastPing = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         credentials = {"username": username, "password": password, "lastPing": lastPing}
-        replyREST = logIn(credentials=credentials)
+        replyREST = LogIn(credentials=credentials)
         reply = pserver_pb2.Reply()
         reply.status_code = replyREST.status_code
         SendIndex()
         return reply
     
     def RequestLogOut(self, request, context):
+        LogOut()
         global pinging_active
         pinging_active = False
         reply = pserver_pb2.Reply()
@@ -155,7 +156,7 @@ def UploadFileRequest():
     )
     return reply
 
-def logIn(credentials):
+def LogIn(credentials):
     url = f"{PSERVER_URL}:{PSERVER_PORT}"
     username = credentials.get("username")
     password = credentials.get("password")
@@ -165,6 +166,14 @@ def logIn(credentials):
         f"http://{SERVER_URL}:{SERVER_PORT}/login", json=pserverData
     )
     return reply
+
+def LogOut():
+    url = f"{PSERVER_URL}:{PSERVER_PORT}"
+    pserverData = {"url": url}
+    requests.post(
+        f"http://{SERVER_URL}:{SERVER_PORT}/logout", json=pserverData
+    )
+
 
 def StartPinging():
     print(pinging_active)

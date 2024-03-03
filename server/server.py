@@ -91,6 +91,15 @@ def ping():
     activeUsers[url] = lastPing
     return Response(status=200)
 
+@app.route("/logout", methods=["POST"])
+def logout():
+    pserverData = request.json
+    url = pserverData.get("url")
+    del activeUsers[url]
+    print("borradooooo")
+    print(activeUsers)
+    return Response(status=200)
+
 def CheckPings():
     while True:
         currentTime = datetime.now()
