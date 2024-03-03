@@ -6,7 +6,7 @@
 
 # P2P - Comunicación entre procesos mediante API REST y RPC
 
-## 1. breve descripción de la actividad
+## 1. Breve descripción de la actividad
 La actividad consiste en crear una red P2P no estructurada basada en servidor de directorio y localizacion. Para las comunicaciones se utilizara API REST y gRPC.
 
 ### 1.1. Que aspectos cumplió o desarrolló de la actividad propuesta por el profesor (requerimientos funcionales y no funcionales)
@@ -14,7 +14,7 @@ El pclient se comunica correctamente con el pserver a traves de gRPC. El pserver
 
 ### 1.2. Que aspectos NO cumplió o desarrolló de la actividad propuesta por el profesor (requerimientos funcionales y no funcionales)
 
-## 2. información general de diseño de alto nivel, arquitectura, patrones, mejores prácticas utilizadas.
+## 2. Información general de diseño de alto nivel, arquitectura, patrones, mejores prácticas utilizadas.
 
 ## 3. Descripción del ambiente de desarrollo y técnico: lenguaje de programación, librerias, paquetes, etc, con sus numeros de versiones.
 **Detalles tecnicos** </br>
@@ -94,6 +94,6 @@ El proyecto se ejecuta de la siguiente manera:
 
 ### opcionalmente - si quiere mostrar resultados o pantallazos 
 
-## 5. otra información que considere relevante para esta actividad.
+## 5. Otra información que considere relevante para esta actividad.
 
 ## referencias:
