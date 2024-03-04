@@ -18,7 +18,7 @@ El pclient se comunica correctamente con el pserver a traves de gRPC. El pserver
 
 La arquitectura es la de una red P2P no estructurado basada en el servidor. El flujo de la comunicacion para la carga y descarga de archivos se da de la siguiente manera:
 
-![ArquitecturaReto1y2Listo drawio](https://github.com/mstermigol/mjaramil20-st0263/assets/85334763/4a23f1c9-3ae0-4737-9526-a57e866f8ed5)
+![ArquitecturaReto1y2Listo2 drawio](https://github.com/mstermigol/mjaramil20-st0263/assets/85334763/e3943e52-d008-4771-a78b-026b2853e246)
 
 **Carga:**
 1. Desde el pclient se le dice por gRPC al pserver que se quiere cargar un archivo
