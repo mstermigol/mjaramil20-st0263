@@ -272,7 +272,7 @@ docker build -t peer1 .
 docker run -it -p 5000:5000 peer1
 docker exec -it {id_imagen} /bin/bash
 ```
-Y luego de correr estos comandos estariamos en una línea de comandos distinta donde ya correriamos nuestro código con:
+Y luego de correr estos comandos estariamos en una línea de comandos distinta donde ya correríamos nuestro código con:
 `python pclient.py .env_pclient .env_pserver`
 Y ya estamos listos para usar el programa.
 
