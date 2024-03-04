@@ -16,6 +16,30 @@ El pclient se comunica correctamente con el pserver a traves de gRPC. El pserver
 
 ## 2. Información general de diseño de alto nivel, arquitectura, patrones, mejores prácticas utilizadas.
 
+![ArquitecturaReto1y2Listo2 drawio](https://github.com/mstermigol/mjaramil20-st0263/assets/85334763/e3943e52-d008-4771-a78b-026b2853e246)
+
+La arquitectura es la de una red P2P no estructurado basada en el servidor. El flujo de la comunicacion para la carga y descarga de archivos se da de la siguiente manera:
+
+**Carga:**
+1. Desde el pclient se le dice por gRPC al pserver que se quiere cargar un archivo
+2. El pserver se comunica con el server a traves de RESTAPI para preguntarle por la URL de algun peer.
+3. El servidor le devuelve la URL de uno de los otros peers.
+4. El pserver se comunica por gRPC con el pserver del otro peer y le dice que quiere cargar un archivo.
+5. El pserver del segundo peer revisa si tiene el archivo, en caso de no tenerlo lo agrega a su index y notifica al servidor del nuevo index.
+6. El pserver del segundo peer le dice al otro pserver que la carga fue satisfactoria.
+7. El pserver le notifica al pclient que se cargo el archivo.
+8. El pclient muestra por consola que se logro la carga.
+
+**Descarga:**
+1. Desde el pclient se le dice por gRPC al pserver que se quiere descargar un archivo
+2. El pserver se comunica con el server a traves de RESTAPI para preguntarle por la URL de algun peer que tenga el archivo.
+3. El servidor le devuelve la URL de uno de los otros peers.
+4. El pserver se comunica por gRPC con el pserver del otro peer y le dice que quiere descargar un archivo en especifico.
+5. El pserver del segundo peer revisa si tiene el archivo, en caso de tenerlo le pide al primer peer que lo cargue.
+6. El pserver del primer peer recibe el pedido y agrega el archivo del segundo peer a su index.
+7. El pserver le notifica al server de su nuevo index.
+8. El pclient muestra por consola que se logro la descarga.
+
 ## 3. Descripción del ambiente de desarrollo y técnico: lenguaje de programación, librerias, paquetes, etc, con sus numeros de versiones.
 **Detalles tecnicos** </br>
 El lenguaje de programacion que se utilizo tanto para peer como para server fue `python`. Las librerias que se utilizaron fueron grpcio, grpcio-tools, python-dotenv, flask, requests, random, time, threading, os, sys y concurrent. Todas estas en las ultimas versiones de cada una. 
@@ -53,13 +77,65 @@ Los metodos **API REST** que tiene pserver son:
 6. **SendPingThread** -> Le manda un ping al servidor periodicamente para informarle que esta activo.
 
 Para estos ultimos el `server` les retorna lo siguiente:
-1. **Index** -> Agrega al diccionario de .
-2. **DownloadRequest** -> Notifica al servidor que se quiere descargar un archivo.
-3. **UploadFileRequest** -> Notifica al servidor que se quiere cargar un archivo.
-4. **LogIn** -> Le manda las credenciales al servidor para validarlas.
-5. **LogOut** -> Le notifica al servidor que el peer va a estar inactivo.
-6. **SendPingThread** -> Le manda un ping al servidor periodicamente para informarle que esta activo.
-   
+1. **index** -> Agrega al diccionario de archivos la URL del peer a los archivos que tenga.
+2. **download** -> Devuelve la URL de algun peer activo de manera aleatoria.
+3. **upload** -> Devuelve la URL de algun peer activo que tenga el archivo.
+4. **login** -> Devuelve si las credenciales son validas y las agrega a un diccionario.
+5. **logout** -> Remueve al peer de la lista de activos.
+6. **ping** -> Actualiza la ultima conexion del peer.
+
+Ademas el `server` tiene un hilo que revisara periodicamente el estado de actividad de los peers para ver si los saca de la lista de peers activos.
+
+**Archivo .proto**
+```text
+syntax = "proto3";
+
+message File{
+	string file_name = 1;
+}
+
+message Credentials {
+	string username = 1;
+	string password = 2;
+}
+
+message Url {
+	string url = 1;
+}
+
+message Reply{
+	int32 status_code = 1;
+}
+
+message Index {
+	repeated string my_list = 1; 
+}
+
+message UploadMessage{
+	string url = 1;
+	string file_name = 2;
+}
+
+message Any{
+
+}
+
+service PServer{
+   rpc DownloadFile(File) returns (Reply) {}
+	rpc UploadFile(File) returns (Reply) {}
+
+	rpc RequestFile(UploadMessage) returns (Reply) {}
+	rpc RequestUpload(File) returns (Reply) {}
+
+	rpc RequestLogIn(Credentials) returns (Reply) {}
+	rpc RequestLogOut(Url) returns (Reply) {}
+
+	rpc RequestPinging(Any) returns (Reply) {}
+
+	rpc ListIndex(Any) returns (Index) {}
+}
+```
+
 **Estructura de carpetas** </br>
 El proyecto se dividio en 4 carpetas:
 1. **peer:** Donde se encuentra todo lo relacionado con el peer como lo es pserver y pclient.
@@ -70,15 +146,10 @@ El proyecto se dividio en 4 carpetas:
 **Ejecucion** </br>
 El proyecto se ejecuta de la siguiente manera:
 1. **Servidor:** Para ejecutar el servidor hay que pararse en la carpeta `./server/` y ejecutar `python server.py`
-2. **Peer:** Para ejecutar el peer hay que pararse en la carpeta `./peer/` y ejecutar `python pclient.py pclient1 pserver1` donde los ultimos parametros son archivos de configuracion que contienen datos. 
+2. **Peer:** Para ejecutar el peer hay que pararse en la carpeta `./peer/` y ejecutar `python pclient.py ..confis/.env_pclient1 ../configs/.env_pserver1` donde los ultimos parametros son archivos de configuracion que contienen datos. 
 
-
-
-### como se compila y ejecuta.
-### detalles del desarrollo.
-### detalles técnicos
-### descripción y como se configura los parámetros del proyecto (ej: ip, puertos, conexión a bases de datos, variables de ambiente, parámetros, etc)
-### opcional - detalles de la organización del código por carpetas o descripción de algún archivo. (ESTRUCTURA DE DIRECTORIOS Y ARCHIVOS IMPORTANTE DEL PROYECTO, comando 'tree' de linux)
+**Configuracion de parametros** </br>
+Los parametros como el puerto y url se configuran en archivos .env dentro de la carpeta de configs.
  
 ### opcionalmente - si quiere mostrar resultados o pantallazos 
 
@@ -96,4 +167,6 @@ El proyecto se ejecuta de la siguiente manera:
 
 ## 5. Otra información que considere relevante para esta actividad.
 
-## referencias:
+### Referencias:
+- https://github.com/st0263eafit/st0263-241/tree/main/Laboratorio-RPC
+- https://www.youtube.com/watch?v=WB37L7PjI5k&t=411s
