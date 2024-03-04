@@ -16,9 +16,9 @@ El pclient se comunica correctamente con el pserver a traves de gRPC. El pserver
 
 ## 2. Información general de diseño de alto nivel, arquitectura, patrones, mejores prácticas utilizadas.
 
-La arquitectura es la de una red P2P no estructurado basada en el servidor. El flujo de la comunicacion para la carga y descarga de archivos se da de la siguiente manera:
-
 ![ArquitecturaReto1y2Listo2 drawio](https://github.com/mstermigol/mjaramil20-st0263/assets/85334763/e3943e52-d008-4771-a78b-026b2853e246)
+
+La arquitectura es la de una red P2P no estructurado basada en el servidor. El flujo de la comunicacion para la carga y descarga de archivos se da de la siguiente manera:
 
 **Carga:**
 1. Desde el pclient se le dice por gRPC al pserver que se quiere cargar un archivo
@@ -85,7 +85,57 @@ Para estos ultimos el `server` les retorna lo siguiente:
 6. **ping** -> Actualiza la ultima conexion del peer.
 
 Ademas el `server` tiene un hilo que revisara periodicamente el estado de actividad de los peers para ver si los saca de la lista de peers activos.
-   
+
+**Archivo .proto**
+```text
+syntax = "proto3";
+
+message File{
+	string file_name = 1;
+}
+
+message Credentials {
+	string username = 1;
+	string password = 2;
+}
+
+message Url {
+	string url = 1;
+}
+
+message Reply{
+	int32 status_code = 1;
+}
+
+message Index {
+	repeated string my_list = 1; 
+}
+
+message UploadMessage{
+	string url = 1;
+	string file_name = 2;
+}
+
+message Any{
+
+}
+
+service PServer{
+   rpc DownloadFile(File) returns (Reply) {}
+	rpc UploadFile(File) returns (Reply) {}
+
+	rpc RequestFile(UploadMessage) returns (Reply) {}
+	rpc RequestUpload(File) returns (Reply) {}
+
+	rpc RequestLogIn(Credentials) returns (Reply) {}
+	rpc RequestLogOut(Url) returns (Reply) {}
+
+	rpc RequestPinging(Any) returns (Reply) {}
+
+	rpc ListIndex(Any) returns (Index) {}
+}
+```
+
 **Estructura de carpetas** </br>
 El proyecto se dividio en 4 carpetas:
 1. **peer:** Donde se encuentra todo lo relacionado con el peer como lo es pserver y pclient.
