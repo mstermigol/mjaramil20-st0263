@@ -143,6 +143,8 @@ El proyecto se dividio en 4 carpetas:
 3. **protos:** Donde se encuentra el archivo .proto.
 4. **configs:** Donde se encuentran todos los .env.
 
+![carpetas](https://github.com/mstermigol/mjaramil20-st0263/assets/85334763/f6cde53f-f2d2-4c7a-bb8a-01668273640c)
+
 **Ejecucion** </br>
 El proyecto se ejecuta de la siguiente manera:
 1. **Servidor:** Para ejecutar el servidor hay que pararse en la carpeta `./server/` y ejecutar `python server.py`
@@ -150,8 +152,12 @@ El proyecto se ejecuta de la siguiente manera:
 
 **Configuracion de parametros** </br>
 Los parametros como el puerto y url se configuran en archivos .env dentro de la carpeta de configs.
+
+**Pantallazos desarrollo** </br>
  
-### opcionalmente - si quiere mostrar resultados o pantallazos 
+![pantallazodesarrollo](https://github.com/mstermigol/mjaramil20-st0263/assets/85334763/0dc5bdb8-0251-42a1-a49d-f18bd35c24af)
+
+![pantallazodesarrollo2](https://github.com/mstermigol/mjaramil20-st0263/assets/85334763/694356c6-7f9f-4ab5-82af-a6475b852031)
 
 ## 4. Descripción del ambiente de EJECUCIÓN (en producción) lenguaje de programación, librerias, paquetes, etc, con sus numeros de versiones.
 
