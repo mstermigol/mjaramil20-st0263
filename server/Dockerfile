@@ -20,4 +20,4 @@ RUN export $(cat .env_server | xargs)
 EXPOSE $SERVER_PORT
 
 # Run the application
-CMD ["python", "server.py", ".env_server"]
+CMD ["python", "server.py", ".env_server"]
