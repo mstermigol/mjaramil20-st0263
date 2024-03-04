@@ -13,6 +13,8 @@ from threading import Thread
 env_path = os.path.join(os.path.dirname(__file__), sys.argv[2])
 dotenv.load_dotenv(dotenv_path=env_path)
 
+PSERVER_LOCAL_URL = os.getenv("PSERVER_LOCAL_URL")
+
 SERVER_URL = os.getenv("SERVER_URL")
 SERVER_PORT = os.getenv("SERVER_PORT")
 
@@ -25,7 +27,7 @@ pinging_active = True
 
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-    server.add_insecure_port(f"{PSERVER_URL}:{PSERVER_PORT}")
+    server.add_insecure_port(f"{PSERVER_LOCAL_URL}:{PSERVER_PORT}")
     pserver_pb2_grpc.add_PServerServicer_to_server(PServerServicer(), server)
     server.start()
     server.wait_for_termination()

@@ -19,6 +19,10 @@ users = {}
 files = {}
 activeUsers = {}
 
+@app.route("/", methods=["GET"])
+def home():
+    return "Hola mundo"
+
 @app.route("/login", methods=["POST"])
 def login():
     pserverData = request.json
