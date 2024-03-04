@@ -148,13 +148,8 @@ El proyecto se ejecuta de la siguiente manera:
 1. **Servidor:** Para ejecutar el servidor hay que pararse en la carpeta `./server/` y ejecutar `python server.py`
 2. **Peer:** Para ejecutar el peer hay que pararse en la carpeta `./peer/` y ejecutar `python pclient.py pclient1 pserver1` donde los ultimos parametros son archivos de configuracion que contienen datos. 
 
-
-
-### como se compila y ejecuta.
-### detalles del desarrollo.
-### detalles técnicos
-### descripción y como se configura los parámetros del proyecto (ej: ip, puertos, conexión a bases de datos, variables de ambiente, parámetros, etc)
-### opcional - detalles de la organización del código por carpetas o descripción de algún archivo. (ESTRUCTURA DE DIRECTORIOS Y ARCHIVOS IMPORTANTE DEL PROYECTO, comando 'tree' de linux)
+**Configuracion de parametros** </br>
+Los parametros como el puerto y url se configuran en archivos .env dentro de la carpeta de configs.
  
 ### opcionalmente - si quiere mostrar resultados o pantallazos 
 
