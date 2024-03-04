@@ -252,14 +252,19 @@ sudo systemctl enable docker
 sudo systemctl start docker
 git clone https://github.com/mstermigol/mjaramil20-st0263
 cd mjaramil20-st0263
-cd server
+cd peer
 ```
 Luego creamos dos archivos para nuestras configuraciones que van a ser `.env_pclient` y `.env_pserver` que respectivamente tienen:
 ```text
-PSERVER_URL="54.174.76.166"                                                                                           PSERVER_PORT="5001"
+PSERVER_URL="54.174.76.166"
+PSERVER_PORT="5001"
 ```
 ```text
-PSERVER_URL="54.174.76.166"                                                                                           PSERVER_PORT="5001"                                                                                                   PSERVER_LOCAL_URL="0.0.0.0"                                                                                           SERVER_URL="34.201.94.254"                                                                                            SERVER_PORT="5000" 
+PSERVER_URL="54.174.76.166"
+PSERVER_PORT="5001"
+PSERVER_LOCAL_URL="0.0.0.0"
+SERVER_URL="34.201.94.254"
+SERVER_PORT="5000" 
 ```
 Una vez creamos estos archivos corremos los siguientes comandos:
 ```bash
