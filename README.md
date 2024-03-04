@@ -21,7 +21,7 @@ El pclient se comunica correctamente con el pserver a traves de gRPC. El pserver
 La arquitectura es la de una red P2P no estructurado basada en el servidor. El flujo de la comunicacion para la carga y descarga de archivos se da de la siguiente manera:
 
 **Carga:**
-1. Desde el pclient se le dice por gRPC al pserver que se quiere cargar un archivo
+1. Desde el pclient se le dice por gRPC al pserver que se quiere cargar un archivo.
 2. El pserver se comunica con el server a traves de RESTAPI para preguntarle por la URL de algun peer.
 3. El servidor le devuelve la URL de uno de los otros peers.
 4. El pserver se comunica por gRPC con el pserver del otro peer y le dice que quiere cargar un archivo.
