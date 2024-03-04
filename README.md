@@ -163,7 +163,7 @@ Los parametros como el puerto y url se configuran en archivos .env dentro de la 
 
 El proyecto se desplegó en AWS con docker.
 
-Se creó un archivo de docker para el servidor:
+Se creó un archivo de docker para el server:
 ```text
 # Use an official Python runtime as a parent image
 FROM python:3.10
@@ -186,7 +186,7 @@ RUN pip install -r requirements.txt
 RUN export $(cat .env_pserver | xargs)
 EXPOSE $PSERVER_PORT
 ```
-y un archivo de docker para el servidor:
+y un archivo de docker para el peer:
 ```text
 # Use an official Python runtime as a parent image
 FROM python:3.10
