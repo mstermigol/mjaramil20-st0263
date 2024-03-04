@@ -10,7 +10,7 @@
 La actividad consiste en crear una red P2P no estructurada basada en servidor de directorio y localización. Para las comunicaciones se utilizará API REST y gRPC.
 
 ### 1.1. Que aspectos cumplió o desarrolló de la actividad propuesta por el profesor (requerimientos funcionales y no funcionales)
-El pclient se comunica correctamente con el pserver a traves de gRPC. El pserver se comunica correctamente con el server a través de API REST y se comunica con otros pserver a través de gRPC. Además, todas las funcionalidades (descarga, carga) y las funcionalidades que se derivan de las anteriores mencionadas funcionan satisfactoriamente.
+El pclient se comunica correctamente con el pserver a través de gRPC. El pserver se comunica correctamente con el server a través de API REST y se comunica con otros pserver a través de gRPC. Además, todas las funcionalidades (descarga, carga) y las funcionalidades que se derivan de las anteriores mencionadas funcionan satisfactoriamente.
 
 ### 1.2. Que aspectos NO cumplió o desarrolló de la actividad propuesta por el profesor (requerimientos funcionales y no funcionales)
 
@@ -18,7 +18,7 @@ El pclient se comunica correctamente con el pserver a traves de gRPC. El pserver
 
 ![ArquitecturaReto1y2Listo2 drawio](https://github.com/mstermigol/mjaramil20-st0263/assets/85334763/e3943e52-d008-4771-a78b-026b2853e246)
 
-La arquitectura es la de una red P2P no estructurado basada en el servidor. El flujo de la comunicacion para la carga y descarga de archivos se da de la siguiente manera:
+La arquitectura es la de una red P2P no estructurado basada en el servidor. El flujo de la comunicación para la carga y descarga de archivos se da de la siguiente manera:
 
 **Carga:**
 1. Desde el pclient se le dice por gRPC al pserver que se quiere cargar un archivo.
@@ -27,12 +27,12 @@ La arquitectura es la de una red P2P no estructurado basada en el servidor. El f
 4. El pserver se comunica por gRPC con el pserver del otro peer y le dice que quiere cargar un archivo.
 5. El pserver del segundo peer revisa si tiene el archivo, en caso de no tenerlo lo agrega a su index y notifica al servidor del nuevo index.
 6. El pserver del segundo peer le dice al otro pserver que la carga fue satisfactoria.
-7. El pserver le notifica al pclient que se cargo el archivo.
-8. El pclient muestra por consola que se logro la carga.
+7. El pserver le notifica al pclient que se cargó el archivo.
+8. El pclient muestra por consola que se logró la carga.
 
 **Descarga:**
 1. Desde el pclient se le dice por gRPC al pserver que se quiere descargar un archivo
-2. El pserver se comunica con el server a través de RESTAPI para preguntarle por la URL de algun peer que tenga el archivo.
+2. El pserver se comunica con el server a través de RESTAPI para preguntarle por la URL de algún peer que tenga el archivo.
 3. El servidor le devuelve la URL de uno de los otros peers.
 4. El pserver se comunica por gRPC con el pserver del otro peer y le dice que quiere descargar un archivo en especifico.
 5. El pserver del segundo peer revisa si tiene el archivo, en caso de tenerlo le pide al primer peer que lo cargue.
@@ -40,7 +40,7 @@ La arquitectura es la de una red P2P no estructurado basada en el servidor. El f
 7. El pserver le notifica al server de su nuevo index.
 8. El pclient muestra por consola que se logró la descarga.
 
-## 3. Descripción del ambiente de desarrollo y técnico: lenguaje de programación, librerias, paquetes, etc, con sus numeros de versiones.
+## 3. Descripción del ambiente de desarrollo y técnico: lenguaje de programación, librerias, paquetes, etc, con sus números de versiones.
 **Detalles técnicos** </br>
 El lenguaje de programación que se utilizó tanto para peer como para server fue `python`. Las librerias que se utilizarón fueron grpcio, grpcio-tools, python-dotenv, flask, requests, random, time, threading, os, sys y concurrent. Todas estas en las últimas versiones de cada una. 
 
@@ -159,7 +159,7 @@ Los parametros como el puerto y url se configuran en archivos .env dentro de la 
 
 ![pantallazodesarrollo2](https://github.com/mstermigol/mjaramil20-st0263/assets/85334763/694356c6-7f9f-4ab5-82af-a6475b852031)
 
-## 4. Descripción del ambiente de EJECUCIÓN (en producción) lenguaje de programación, librerias, paquetes, etc, con sus numeros de versiones.
+## 4. Descripción del ambiente de EJECUCIÓN (en producción) lenguaje de programación, librerias, paquetes, etc, con sus números de versiones.
 
 ### IP o nombres de dominio en nube o en la máquina servidor.
 
