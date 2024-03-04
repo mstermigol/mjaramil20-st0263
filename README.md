@@ -137,7 +137,7 @@ service PServer{
 ```
 
 **Estructura de carpetas** </br>
-El proyecto se dividio en 4 carpetas:
+El proyecto se dividió en 4 carpetas:
 1. **peer:** Donde se encuentra todo lo relacionado con el peer como lo es pserver y pclient.
 2. **server:** Donde esta todo lo relacionado al servidor.
 3. **protos:** Donde se encuentra el archivo .proto.
@@ -161,9 +161,9 @@ Los parametros como el puerto y url se configuran en archivos .env dentro de la 
 
 ## 4. Descripción del ambiente de EJECUCIÓN (en producción) lenguaje de programación, librerias, paquetes, etc, con sus números de versiones.
 
-El proyecto se desplego en AWS con docker.
+El proyecto se desplegó en AWS con docker.
 
-Se creo un archivo de docker para el servidor:
+Se creó un archivo de docker para el servidor:
 ```text
 # Use an official Python runtime as a parent image
 FROM python:3.10
@@ -186,7 +186,7 @@ RUN pip install -r requirements.txt
 RUN export $(cat .env_pserver | xargs)
 EXPOSE $PSERVER_PORT
 ```
-y uno archivo de docker para el servidor:
+y un archivo de docker para el servidor:
 ```text
 # Use an official Python runtime as a parent image
 FROM python:3.10
@@ -212,13 +212,13 @@ EXPOSE $SERVER_PORT
 # Run the application
 CMD ["python", "server.py", ".env_server"]
 ```
-Luego se creo una maquina virtual para el servidor y una para el peer siguiendo los lineamientos del primer link de las referencias con las siguientes reglas de seguridad respectivamente:
+Luego se creó una maquina virtual para el servidor y una para el peer siguiendo los lineamientos del primer link de las referencias con las siguientes reglas de seguridad respectivamente:
 
 ![image](https://github.com/mstermigol/mjaramil20-st0263/assets/85334763/69faa322-250e-4227-9c67-de06cf6fcb41)
 
 ![image](https://github.com/mstermigol/mjaramil20-st0263/assets/85334763/d7513176-5a19-41ff-b8a1-3c764a8cc5d7)
 
-Luego se accedio a la maquina virtual usando SSH y se ejectaron los siguientes comandos:
+Luego se accedió a la maquina virtual usando SSH y se ejectaron los siguientes comandos:
 ```bash
 sudo apt update
 sudo apt install docker.io -y
@@ -235,14 +235,14 @@ Luego creamos un archivo llamado `.env_server` donde definiamos la url y puerto 
 SERVER_URL="34.201.94.254"
 SERVER_PORT="80"
 ```
-Despues ejecutabamos los comandos:
+Después ejecutabamos los comandos:
 ```bash
 docker build -t server
 docker run -d -p 5000:5000
 ```
 Con esto ya tenemos el servidor listo y escuchando peticiones.
 
-Despues continuamos con la maquina virtual para el cliente, alli repetimos estos comandos que utilizamos en el server pero con un cambio y es que en el ultimo nos ubicamos en peer:
+Después continuamos con la máquina virtual para el cliente, allí repetimos estos comandos que utilizamos en el server pero con un cambio y es que en el ultimo nos úbicamos en peer:
 ```bash
 sudo apt update
 sudo apt install docker.io -y
@@ -267,7 +267,7 @@ docker build -t peer1 .
 docker run -it -p 5000:5000 peer1
 docker exec -it {id_imagen} /bin/bash
 ```
-Y luego de correr estos comandos estariamos en una linea de comandos distinta donde ya correriamos nuestro codigo con:
+Y luego de correr estos comandos estariamos en una línea de comandos distinta donde ya correriamos nuestro código con:
 `python pclient.py .env_pclient .env_pserver`
 Y ya estamos listos para usar el programa.
 
