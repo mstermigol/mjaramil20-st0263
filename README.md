@@ -4,6 +4,8 @@
 
 ### Profesor: Edwin Montoya, emontoya@eafit.edu.co
 
+### Video explcando el proyecto: https://www.youtube.com/watch?v=WYUd7Fc3Eew
+
 # P2P - Comunicación entre procesos mediante API REST y RPC
 
 ## 1. Breve descripción de la actividad
