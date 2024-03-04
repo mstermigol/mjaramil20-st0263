@@ -118,4 +118,5 @@ if __name__ == "__main__":
     ping_checker_thread = Thread(target=CheckPings)
     ping_checker_thread.daemon = True
     ping_checker_thread.start()
+    print(f"Server running on {SERVER_URL}:{SERVER_PORT}")
     app.run(host=SERVER_URL, port=SERVER_PORT, debug=True)
