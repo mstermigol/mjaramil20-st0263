@@ -42,7 +42,7 @@ La arquitectura es la de una red P2P no estructurado basada en el servidor. El f
 
 ## 3. Descripción del ambiente de desarrollo y técnico: lenguaje de programación, librerias, paquetes, etc, con sus números de versiones.
 **Detalles técnicos** </br>
-El lenguaje de programación que se utilizó tanto para peer como para server fue `python`. Las librerias que se utilizarón fueron grpcio, grpcio-tools, python-dotenv, flask, requests, random, time, threading, os, sys y concurrent. Todas estas en las últimas versiones de cada una. 
+El lenguaje de programación que se utilizó tanto para peer como para server fue `python`. Las librerias que se utilizarón fueron grpcio==1.62.0, grpcio-tools==1.62.0, python-dotenv==1.0.1, flask==3.0.2 y requests==2.31.0. Todas estas en las últimas versiones de cada una. 
 
 **Detalles del desarrollo** </br>
 Vamos a dividir el desarrollo en `peer` y `server`.
@@ -161,15 +161,119 @@ Los parametros como el puerto y url se configuran en archivos .env dentro de la 
 
 ## 4. Descripción del ambiente de EJECUCIÓN (en producción) lenguaje de programación, librerias, paquetes, etc, con sus números de versiones.
 
-### IP o nombres de dominio en nube o en la máquina servidor.
+El proyecto se desplego en AWS con docker.
 
-### descripción y como se configura los parámetros del proyecto (ej: ip, puertos, conexión a bases de datos, variables de ambiente, parámetros, etc)
+Se creo un archivo de docker para el servidor:
+```text
+# Use an official Python runtime as a parent image
+FROM python:3.10
 
-### como se lanza el servidor.
+# Set environment variables
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
 
-### una mini guía de como un usuario utilizaría el software o la aplicación
+# Set the working directory in the container
+WORKDIR /app
 
-### opcionalmente - si quiere mostrar resultados o pantallazos 
+# Copy the application code into the image
+COPY . /app/
+
+# Install dependencies
+RUN pip install --upgrade pip
+RUN pip install -r requirements.txt
+
+# Expose the port the app runs on
+RUN export $(cat .env_pserver | xargs)
+EXPOSE $PSERVER_PORT
+```
+y uno archivo de docker para el servidor:
+```text
+# Use an official Python runtime as a parent image
+FROM python:3.10
+
+# Set environment variables
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
+# Set the working directory in the container
+WORKDIR /app
+
+# Copy the application code into the image
+COPY . /app/
+
+# Install dependencies
+RUN pip install --upgrade pip
+RUN pip install -r requirements.txt
+
+# Expose the port the app runs on
+RUN export $(cat .env_server | xargs)
+EXPOSE $SERVER_PORT
+
+# Run the application
+CMD ["python", "server.py", ".env_server"]
+```
+Luego se creo una maquina virtual para el servidor y una para el peer siguiendo los lineamientos del primer link de las referencias con las siguientes reglas de seguridad respectivamente:
+
+![image](https://github.com/mstermigol/mjaramil20-st0263/assets/85334763/69faa322-250e-4227-9c67-de06cf6fcb41)
+
+![image](https://github.com/mstermigol/mjaramil20-st0263/assets/85334763/d7513176-5a19-41ff-b8a1-3c764a8cc5d7)
+
+Luego se accedio a la maquina virtual usando SSH y se ejectaron los siguientes comandos:
+```bash
+sudo apt update
+sudo apt install docker.io -y
+sudo apt install docker-compose -y
+sudo apt install git -y
+sudo systemctl enable docker
+sudo systemctl start docker
+git clone https://github.com/mstermigol/mjaramil20-st0263
+cd mjaramil20-st0263
+cd server
+```
+Luego creamos un archivo llamado `.env_server` donde definiamos la url y puerto del server en nuestro caso:
+```text
+SERVER_URL="34.201.94.254"
+SERVER_PORT="80"
+```
+Despues ejecutabamos los comandos:
+```bash
+docker build -t server
+docker run -d -p 5000:5000
+```
+Con esto ya tenemos el servidor listo y escuchando peticiones.
+
+Despues continuamos con la maquina virtual para el cliente, alli repetimos estos comandos que utilizamos en el server pero con un cambio y es que en el ultimo nos ubicamos en peer:
+```bash
+sudo apt update
+sudo apt install docker.io -y
+sudo apt install docker-compose -y
+sudo apt install git -y
+sudo systemctl enable docker
+sudo systemctl start docker
+git clone https://github.com/mstermigol/mjaramil20-st0263
+cd mjaramil20-st0263
+cd server
+```
+Luego creamos dos archivos para nuestras configuraciones que van a ser `.env_pclient` y `.env_pserver` que respectivamente tienen:
+```text
+PSERVER_URL="54.174.76.166"                                                                                           PSERVER_PORT="5001"
+```
+```text
+PSERVER_URL="54.174.76.166"                                                                                           PSERVER_PORT="5001"                                                                                                   PSERVER_LOCAL_URL="0.0.0.0"                                                                                           SERVER_URL="34.201.94.254"                                                                                            SERVER_PORT="5000" 
+```
+Una vez creamos estos archivos corremos los siguientes comandos:
+```bash
+docker build -t peer1 .
+docker run -it -p 5000:5000 peer1
+docker exec -it {id_imagen} /bin/bash
+```
+Y luego de correr estos comandos estariamos en una linea de comandos distinta donde ya correriamos nuestro codigo con:
+`python pclient.py .env_pclient .env_pserver`
+Y ya estamos listos para usar el programa.
+
+Para ingresar como otro peer, abrimos una terminal nueva, nos conectamos con SSH a la instancia de peer y hacemos el mismo proceso, solo que en los archivos `.env` cambiamos el puerto por otro distinto.
+
+![workingInaws](https://github.com/mstermigol/mjaramil20-st0263/assets/85334763/6578770d-c974-4df4-9428-1cc7053bd1c7)
 
 ## 5. Otra información que considere relevante para esta actividad.
 
