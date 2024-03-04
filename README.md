@@ -146,7 +146,7 @@ El proyecto se dividio en 4 carpetas:
 **Ejecucion** </br>
 El proyecto se ejecuta de la siguiente manera:
 1. **Servidor:** Para ejecutar el servidor hay que pararse en la carpeta `./server/` y ejecutar `python server.py`
-2. **Peer:** Para ejecutar el peer hay que pararse en la carpeta `./peer/` y ejecutar `python pclient.py pclient1 pserver1` donde los ultimos parametros son archivos de configuracion que contienen datos. 
+2. **Peer:** Para ejecutar el peer hay que pararse en la carpeta `./peer/` y ejecutar `python pclient.py ..confis/.env_pclient1 ../configs/.env_pserver1` donde los ultimos parametros son archivos de configuracion que contienen datos. 
 
 **Configuracion de parametros** </br>
 Los parametros como el puerto y url se configuran en archivos .env dentro de la carpeta de configs.
