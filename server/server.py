@@ -6,8 +6,9 @@ from flask import Flask, request, Response, jsonify
 import time
 from datetime import datetime
 import random
+import sys
 
-env_path = os.path.join(os.path.dirname(__file__), "./configs/.env_server")
+env_path = os.path.join(os.path.dirname(__file__), sys.argv[1])
 load_dotenv(dotenv_path=env_path)
 
 SERVER_URL = os.getenv("SERVER_URL")
