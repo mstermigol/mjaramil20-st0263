@@ -175,4 +175,5 @@ Los parametros como el puerto y url se configuran en archivos .env dentro de la 
 
 ### Referencias:
 - https://github.com/st0263eafit/st0263-241/tree/main/Laboratorio-RPC
+- https://github.com/st0263eafit/st0263-241/tree/main
 - https://www.youtube.com/watch?v=WB37L7PjI5k&t=411s
